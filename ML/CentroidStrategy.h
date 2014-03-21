@@ -1,8 +1,8 @@
 #pragma once
 
-#include "DataPoint.h"
+#include "DataSet.h"
 
-namespace Centroid
+namespace ML
 {
 	/*
 	*	

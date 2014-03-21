@@ -6,5 +6,6 @@
     <ClInclude Include="KMeans.h" />
     <ClInclude Include="MarkovChain.h" />
     <ClInclude Include="NeuralNet.h" />
+    <ClInclude Include="DataSet.h" />
   </ItemGroup>
 </Project>

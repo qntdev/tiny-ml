@@ -1,57 +1,58 @@
 #pragma once
 
-// DATA POINT
-/*
-*
-*/
-template <typename T>
-class DataPoint
+namespace ML
 {
-public:
-	DataPoint() = default;
-	DataPoint(const DataPoint&) = default;
-	DataPoint& operator=(const DataPoint&) = default;
 
-	DataPoint(T& dp)
-		:m_datapoint(dp)
-	{}
+	// DATA POINT
+	/*
+	*
+	*/
+	template <typename T>
+	class DataPoint
+	{
+	public:
+		DataPoint() = default;
+		DataPoint(const DataPoint&) = default;
+		DataPoint& operator=(const DataPoint&) = default;
 
-	T& data() {
-		return m_datapoint;
-	}
+		DataPoint(T& dp)
+			:m_datapoint(dp)
+		{}
 
-	int label() const {
-		return m_label;
-	}
+		T& data() {
+			return m_datapoint;
+		}
 
-	void setLabel(int l){
-		this->m_label = l;
-	}
+		int label() const {
+			return m_label;
+		}
 
-	double dist(T& other){
-		return Distance::dist(*this, other);
-	}
+		void setLabel(int l){
+			this->m_label = l;
+		}
 
-	int size() const {
-		return m_datapoint.size();
-	}
+		double dist(T& other){
+			return Distance::dist(*this, other);
+		}
 
-	std::string toString(){
-		std::ostringstream ss;
-		ss << std::fixed << std::setprecision(2);
+		int size() const {
+			return m_datapoint.size();
+		}
 
-		for (auto &datapoint : m_datapoint)
-			ss << datapoint << ";";
-			
-		auto ret_str = ss.str().pop_back();
-		return ret_str;
-	}
+		std::string toString(){
+			std::ostringstream ss;
+			ss << std::fixed << std::setprecision(2);
 
-private:
-	T m_datapoint;
-	int m_label;
-};
+			for (auto &datapoint : m_datapoint)
+				ss << datapoint << ";";
 
-// DATA SET
-template <typename T>
-using DataSet = std::vector<DataPoint<T>>;
+			auto ret_str = ss.str().pop_back();
+			return ret_str;
+		}
+
+	private:
+		T m_datapoint;
+		int m_label;
+	};
+
+}

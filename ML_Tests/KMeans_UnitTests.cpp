@@ -4,6 +4,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 using DP = std::vector<double>;
+using namespace ML;
 
 namespace ML_Tests
 {

@@ -8,6 +8,7 @@
 #include <iomanip> // put_time
 #include <fstream>
 
+using namespace ML;
 
 template<typename DataType>
 DataSet<DataType> load_data(std::string filename)

@@ -66,6 +66,7 @@
   <ItemGroup>
     <ClInclude Include="CentroidStrategy.h" />
     <ClInclude Include="DataPoint.h" />
+    <ClInclude Include="DataSet.h" />
     <ClInclude Include="KMeans.h" />
     <ClInclude Include="MarkovChain.h" />
     <ClInclude Include="NeuralNet.h" />
