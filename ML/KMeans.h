@@ -1,17 +1,16 @@
 #pragma once
 
 #include <random>
+#include <map>
+#include <algorithm>
 
-#include <boost/date_time.hpp>
-
-#include "DataPoint.h"
+#include "DataSet.h"
 #include "CentroidStrategy.h"
 
-static const int DEFAULT_NUM_OF_CLUSTERS = 8;
+static const int default_num_of_clusters = 8;
 
 namespace ML
 {
-
 	// K-MEANS
 	template<typename T, typename CentroidPolicy = MeanPolicy<T>>
 	class KMeans
@@ -22,14 +21,14 @@ namespace ML
 		/*
 		*
 		*/
-		void fit(DataSet<T> &data, int num_clusters = DEFAULT_NUM_OF_CLUSTERS, DataSet<T>& init_clusters = DataSet<T>())
+		void fit(DataSet<T> &data, int num_clusters = default_num_of_clusters, DataSet<T>& init_clusters = DataSet<T>())
 		{
 			//
 			if (data.empty())
 				throw std::invalid_argument("Data set cannot be empty");
 
 			//
-			if (num_clusters != DEFAULT_NUM_OF_CLUSTERS)
+			if (num_clusters != default_num_of_clusters)
 				this->m_num_of_clusters = num_clusters;
 
 			// Randomize intial centroids
@@ -38,25 +37,8 @@ namespace ML
 			else
 				m_centroids = init_clusters;
 
-			//
-			keep_working = true;
-
-			for (m_iter_counter = 0; m_iter_counter < m_max_iter; m_iter_counter++)
-			{
-				if (!keep_working) break;
-
-				for (auto &data_point : data)
-				{
-					auto distances = calculate_distances(data_point, m_centroids);
-					// closest centroid
-					int arg_min = std::distance(distances.begin(), std::min_element(distances.begin(), distances.end()));
-					data_point.setLabel(arg_min);
-				}
-
-				m_centroids = calculateCentroids(data, num_clusters);
-
-				cluster_count_diff(data);
-			}
+			// Calculate clusters
+			find_clusters(data);
 		}
 
 		/*
@@ -88,10 +70,39 @@ namespace ML
 		*/
 		int predict(DataPoint<T> &dp)
 		{
-			return 0;
+			calculate_distances(dp, m_centroids);
+			int argmin = std::distance(distances.begin(), std::min_element(distances.begin(), distances.end()));
+
+			assert(argmin <= m_num_of_clusters);
+			assert(m_num_of_clusters >= 0);
+
+			return argmin;
 		}
 
 	private:
+
+		void find_clusters(DataSet<T> &data)
+		{
+			//
+			keep_working = true;
+
+			for (m_iter_counter = 0; m_iter_counter < m_max_iter; m_iter_counter++)
+			{
+				if (!keep_working) break;
+
+				for (auto &data_point : data)
+				{
+					auto distances = calculate_distances(data_point, m_centroids);
+					// closest centroid
+					int arg_min = std::distance(distances.begin(), std::min_element(distances.begin(), distances.end()));
+					data_point.setLabel(arg_min);
+				}
+
+				m_centroids = calculateCentroids(data, m_num_of_clusters);
+
+				cluster_count_diff(data);
+			}
+		}
 
 		int cluster_count(DataSet<T> &data, int cluster_id)
 		{
@@ -134,7 +145,7 @@ namespace ML
 		// Algorithm setup and parameters
 		DataSet<T> m_centroids;
 		DataSet<T> m_data;
-		int m_num_of_clusters = DEFAULT_NUM_OF_CLUSTERS;
+		int m_num_of_clusters = default_num_of_clusters;
 		int m_max_iter = 1000;
 
 		// additional/helpers
@@ -144,8 +155,6 @@ namespace ML
 
 	};
 
-	template <typename T>
-	using KMeansPtr = std::shared_ptr<KMeans<T>>;
 
 	/*
 	*
@@ -203,6 +212,18 @@ namespace ML
 		static double minElement(DataSet<T> &data, int column){
 			auto min_el = std::min_element(data.begin(), data.end(), [column](DataPoint<T> &l, DataPoint<T> &r){ return l.data()[column] < r.data()[column]; });
 			return min_el->data()[column];
+		}
+
+		template<typename T>
+		static int argMin(T& range){
+			int argmin = std::distance(std::begin(range), std::min_element(std::begin(range), std::end(range)));
+			return argmin;
+		}
+
+		template <typename T>
+		static int argMax(T& range){
+			int argmax = std::distance(std::begin(range), std::max_element(std::begin(range), std::end(range)));
+			return argmax;
 		}
 	};
 

@@ -2,12 +2,11 @@
 
 namespace ML
 {
-
 	// DATA POINT
 	/*
 	*
 	*/
-	template <typename T>
+	template <typename T, typename ValType = double>
 	class DataPoint
 	{
 	public:
@@ -23,6 +22,10 @@ namespace ML
 			return m_datapoint;
 		}
 
+		ValType& operator[](int idx){
+			return m_datapoint[idx];
+		}
+
 		int label() const {
 			return m_label;
 		}
@@ -36,7 +39,7 @@ namespace ML
 		}
 
 		int size() const {
-			return m_datapoint.size();
+			return std::distance(std::begin(m_datapoint), std::end(m_datapoint));
 		}
 
 		std::string toString(){

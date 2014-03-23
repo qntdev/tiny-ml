@@ -12,9 +12,6 @@ namespace ML
 	};
 
 	template <typename T>
-	using NeuralNetPtr = std::shared_ptr<NeuralNet<T>>;
-
-	template <typename T>
 	class Layer
 	{
 
